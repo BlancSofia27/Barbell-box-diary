@@ -1,0 +1,51 @@
+###
+POST http://localhost:9000/api/users HTTP/1.1
+Content-Type: application/json
+
+{
+    "userName":"sofia27",
+    "name":"sofia",
+    "lastName":"blanc",
+    "password":"1234",
+    "phone":1234,
+    "paidDays":3,
+    "notedDays":["lunes 18.00", "miercoles 18.00", "viernes 18.00"]
+}
+
+###
+GET http://localhost:9000/api/users HTTP/1.1
+
+### Eliminar un turno ###
+DELETE http://localhost:9000/api/users/deleteTurn/sofia27/martes 17.00 HTTP/1.1
+Content-Type: application/json
+
+{
+  "userName": "sofia27",
+  "turn": "martes 17.00"
+}
+
+
+### Agregar un turno ###
+POST http://localhost:9000/api/users/addTurn/sofia27/martes 17.00
+Content-Type: application/json
+
+{
+  "userName": "sofia27",
+  "turn": "martes 17.00"
+}
+
+
+###
+GET  http://localhost:9000/api/users/sofia27/notedDays HTTP/1.1
+
+###
+GET  http://localhost:9000/api/users/sofia27/days HTTP/1.1
+
+### Agregar un turno ###
+POST http://localhost:9000/api/users/addUserOpenBox HTTP/1.1
+Content-Type: application/json
+
+{
+  "name": "sofia blanc",
+  "phone": "2746575"
+}
