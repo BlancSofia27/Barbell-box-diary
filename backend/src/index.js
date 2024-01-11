@@ -2,7 +2,8 @@
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose')
-const userRoutes = require('./routes/userRoutes');
+//const userRoutes = require('./routes/userRoutes');
+const diaryRoutes = require('./routes/diaryRoutes')
 const cors = require('cors')
 const app = express();
 const port = process.env.PORT || 9000;
@@ -12,7 +13,8 @@ app.use(cors({ origin: '*' }));
 
 //middlewares
 app.use(express.json());
-app.use('/api',userRoutes)
+//app.use('/api',userRoutes)
+app.use('/diary',diaryRoutes)
 
 //routes
 app.get('/',(req, res)=>{

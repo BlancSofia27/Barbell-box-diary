@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react"
 import Swal from "sweetalert2"
 import { useSelector, useDispatch } from "react-redux"
+import { useAuth0 } from "@auth0/auth0-react"
 import {
   getUserInfo,
   addTurnToUser,
@@ -74,6 +75,7 @@ const daysAndTimes = [
 export default function Shifts() {
   const { user_noted_days, days } = useSelector((state) => state.user)
   const dispatch = useDispatch()
+  const {user, isAuthenticated, isLoading} = useAuth0();
   const [disabledTurns, setDisabledTurns] = useState([
     "lunes 07.00",
     "martes 07.00",
@@ -120,7 +122,7 @@ export default function Shifts() {
     }).then(async (result) => {
       if (result.isConfirmed) {
         const turn = value
-        const userName = "sofia27"
+        const userName = user.name
 
         try {
           isDayAlreadyNoted(turn)
@@ -153,7 +155,7 @@ export default function Shifts() {
       }).then((result) => {
         if (result.isConfirmed) {
           const turn = value
-          const userName = "sofia27"
+          const userName =user.name
           try {
             deleteTurnToUser(turn, userName)
             Swal.fire({
