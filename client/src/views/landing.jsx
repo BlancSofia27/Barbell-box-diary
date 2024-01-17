@@ -16,7 +16,7 @@ export default function Landing() {
             <div 
             className="text-[50px]"
             >
-                Primera Clase Gratis!
+                iniciar sesion
             </div>
             <button 
             className="flex items-center justify-center mt-[30px] w-[300px] h-[50px] bg-maroon hover:bg-blue-500 text-black text-[30px] font-quicksand py-3 px-6 rounded-[20px] shadow-lg shadow-neutral-950 hover:text-white transform transition-all duration-500 ease-in-out hover:scale-110 hover:brightness-110 hover:animate-pulse active:animate-bounce"
