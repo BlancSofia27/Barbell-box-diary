@@ -2,8 +2,7 @@ const express = require('express');
 const Diary = require('../models/diaryModel');
 
 // Controlador para crear un nuevo turno
-async function createTurnInDiary (req, res){
-        const { userName, dayTurn, hourTurn } = req.body;
+const createTurnInDiary = async ( userName, dayTurn, hourTurn) => {
 
         // Crea una nueva instancia del modelo Diary
         const newTurn = new Diary({
@@ -14,11 +13,16 @@ async function createTurnInDiary (req, res){
 
         // Guarda el nuevo turno en la base de datos
         const savedTurn = await newTurn.save();
-
-        // Envía una respuesta con el turno guardado
-        res.status(201).json(savedTurn);
+        console.log(savedTurn)
     }
 
+    const getUserTurns = async (userName) => {
+        const turns = await Diary.find({ userName }).select('userName dayTurn hourTurn');;
+        return turns;
+      };
+      
+
 module.exports = {
-    createTurnInDiary,
+    createTurnInDiary,getUserTurns
 };
+

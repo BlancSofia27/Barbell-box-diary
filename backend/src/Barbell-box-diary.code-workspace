@@ -1,0 +1,14 @@
+{
+  "folders": [
+	{
+		"path": "../.."
+	},
+	{
+		"path": "../../../pf-v1-front"
+	},
+	{
+		"path": "../../../pf-v1-back"
+	}
+],
+  "settings": {}
+}

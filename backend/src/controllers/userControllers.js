@@ -1,7 +1,24 @@
-// const express = require('express');
-// const userSchema = require('../models/diaryModel');
-// const userOpenBoxSchema = require('../models/userOpenBoxModel')
+const express = require('express');
+const User = require('../models/userModel');
+//const userOpenBoxSchema = require('../models/userOpenBoxModel')
 
+const addUser = async ( name, email, notedDays) => {
+    try{
+    const newUser = new User({
+        name,
+        email,
+        notedDays,
+    });
+    const saveUser = await newUser.save();
+
+} catch (err){
+    throw new Error(err)
+}
+}
+
+module.exports ={
+    addUser,
+}
 
 // async function addTurn (req, res){
 //     const userName = req.params.userName

@@ -2,12 +2,7 @@ import React, { useEffect, useState } from "react"
 import Swal from "sweetalert2"
 import { useSelector, useDispatch } from "react-redux"
 import { useAuth0 } from "@auth0/auth0-react"
-import {
-  getUserInfo,
-  addTurnToUser,
-  getUserDays,
-  deleteTurnToUser,
-} from "../redux/user/userActions"
+import { addTurnToUser,getUserNotedDays } from "../redux/diary/diaryActions"
 
 const daysAndTimes = [
   { day: "lunes", time: "07.00" },
@@ -73,9 +68,9 @@ const daysAndTimes = [
 ]
 
 export default function Shifts() {
-  const { user_noted_days, days } = useSelector((state) => state.user)
+  const { user, isAuthenticated, isLoading } = useAuth0()
+  const { noted_days, days } = useSelector((state) => state.diary)
   const dispatch = useDispatch()
-  const {user, isAuthenticated, isLoading} = useAuth0();
   const [disabledTurns, setDisabledTurns] = useState([
     "lunes 07.00",
     "martes 07.00",
@@ -88,30 +83,36 @@ export default function Shifts() {
     "viernes 18.30",
   ])
 
+  const handleName = async (user) => {
+    const userName = await user?.name
+    console.log(userName)
+    return userName
+  }
+
   useEffect(() => {
-    dispatch(getUserInfo())
-    dispatch(getUserDays())
+    dispatch(getUserNotedDays(handleName()));
+    
   }, [dispatch])
 
   const addTurn = () => {
     Swal.fire("agendado!", "", "success")
-    setTimeout(() => {
-      window.location.reload()
-    }, 1000)
+    // setTimeout(() => {
+    //   window.location.reload()
+    // }, 5000)
   }
 
-  const isDayAlreadyNoted = (value) => {
-    const cadena = value
-    // Separar la cadena en un array utilizando el espacio como delimitador
-    const parte = cadena.split(" ")
-    // partes contendrá ["martes", "18.00"]
-    const day = parte[0] // "martes"
-    const time = parte[1] // "18.00"
+  // const isDayAlreadyNoted = (value) => {
+    //   const cadena = value
+  //   // Separar la cadena en un array utilizando el espacio como delimitador
+  //   const parte = cadena.split(" ")
+  //   // partes contendrá ["martes", "18.00"]
+  //   const day = parte[0] // "martes"
+  //   const time = parte[1] // "18.00"
 
-    if (days.includes(day)) {
-      return true
-    }
-  }
+  //   if (days.includes(day)) {
+    //     return true
+    //   }
+    // }
 
   const handleConfirmTurno = (value) => {
     Swal.fire({
@@ -121,13 +122,21 @@ export default function Shifts() {
       confirmButtonText: "agendar turno",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        const turn = value
-        const userName = user.name
+        const cadena = value
+        // Separar la cadena en un array utilizando el espacio como delimitador
+        const parte = cadena.split(" ")
+
+        const turnData = {
+          userName: user.name,
+          dayTurn: parte[0],
+          hourTurn: parte[1],
+        }
 
         try {
-          isDayAlreadyNoted(turn)
-            ? Swal.fire("Ya estás agendado para este día", "", "warning")
-            : (await addTurnToUser(turn, userName)) && addTurn()
+          // isDayAlreadyNoted(dayTurn)
+          //   ? Swal.fire("Ya estás agendado para este día", "", "warning")
+          //   : (await addTurnToUser(userName, dayTurn, hourTurn)) && addTurn()
+          dispatch(addTurnToUser(turnData)) && addTurn()
         } catch (error) {
           console.error("Error al agendar el turno:", error.message)
           Swal.fire("Hubo un error al agendar el turno", "", "error")
@@ -141,7 +150,7 @@ export default function Shifts() {
       return
     }
     // Verificar si ya está agendado antes de mostrar el SweetAlert
-    else if (!user_noted_days.includes(value)) {
+    else if (!noted_days.includes(value)) {
       handleConfirmTurno(value)
     } else {
       Swal.fire({
@@ -154,18 +163,21 @@ export default function Shifts() {
         confirmButtonText: "si",
       }).then((result) => {
         if (result.isConfirmed) {
-          const turn = value
-          const userName =user.name
+          // const cadena = value
+          // const parte = cadena.split(" ")
+          // const dayTurn = parte[0]
+          // const hourTurn = parte[1]
+          // const name =user.name
           try {
-            deleteTurnToUser(turn, userName)
+            //deleteTurnToUser(userName, dayTurn, hourTurn)
             Swal.fire({
               title: "Deleted!",
               text: `fuiste eliminado del horario: ${value}`,
               icon: "success",
             })
-            setTimeout(() => {
-              window.location.reload()
-            }, 1000)
+            // setTimeout(() => {
+            //   window.location.reload()
+            // }, 1000)
           } catch (error) {
             console.error("Error al eliminar el turno:", error.message)
             Swal.fire("Hubo un error al eliminar el turno", "", "error")
@@ -177,31 +189,33 @@ export default function Shifts() {
 
   return (
     <div className="grid grid-cols-5 items-center items-center justify-center mt-[58px] ml-[460px] w-[1137px]">
-  {daysAndTimes.map((item, index) => {
-    const value = `${item.day} ${item.time}`;
-    const isCrossfitClass = user_noted_days.includes(value) ? "crossfit" : "";
-    const isDisabled = disabledTurns.includes(value);
-    const isSpecialTurn = ""
+      {daysAndTimes.map((item, index) => {
+        const value = `${item.day} ${item.time}`
+        const isCrossfitClass = noted_days.includes(value)
+          ? "crossfit"
+          : ""
+        const isDisabled = disabledTurns.includes(value)
+        const isSpecialTurn = ""
 
-    return (
-      <div
-        key={index}
-        value={value}
-        onClick={() => handleDivClick(value)}
-        className={`mx-[3px] my-[10px] rounded-3xs shadow-[0px_5px_4px_rgba(0,_0,_0,_0.25)] w-[166px] h-[46px] ${isCrossfitClass} ${
-          isDisabled
-            ? "cursor-not-allowed shadow-[0px_0px_0px_rgba(0,_0,_0,_0.25)]"
-            : ""
-        } ${
-          isSpecialTurn
-            ? "bg-whitesmoke text-red text-[33px]"
-            : "bg-whitesmoke"
-        }`}
-      >
-        {isCrossfitClass && <span>CrossFit</span>}
-      </div>
-    );
-  })}
-</div>
+        return (
+          <div
+            key={index}
+            value={value}
+            onClick={() => handleDivClick(value)}
+            className={`mx-[3px] my-[10px] rounded-3xs shadow-[0px_5px_4px_rgba(0,_0,_0,_0.25)] w-[166px] h-[46px] ${isCrossfitClass} ${
+              isDisabled
+                ? "cursor-not-allowed shadow-[0px_0px_0px_rgba(0,_0,_0,_0.25)]"
+                : ""
+            } ${
+              isSpecialTurn
+                ? "bg-whitesmoke text-red text-[33px]"
+                : "bg-whitesmoke"
+            }`}
+          >
+            {isCrossfitClass && <span>CrossFit</span>}
+          </div>
+        )
+      })}
+    </div>
   )
 }

@@ -1,9 +1,10 @@
-// const express = require('express');
-// //const userSchema = require('../models/userModel');
-// const router = express.Router();
-// const {addTurn, getDays, getTurns, deleteTurn} = require ('../controllers/userControllers');
-// const { postUserOpenBoxHandler } = require('../handlers/userHandlers');
+const express = require('express');
+const router = express.Router();
+const { postUserHandler } = require('../handlers/userHandlers');
 
+router.post('/addUser',postUserHandler)
+
+module.exports = router;
 // // create user
 // router.post('/users', async (req, res) => {
 //   const { userName, name, lastName, password, phone, paidDays, notedDays } = req.body;

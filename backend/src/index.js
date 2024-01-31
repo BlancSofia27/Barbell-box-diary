@@ -2,19 +2,21 @@
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose')
-//const userRoutes = require('./routes/userRoutes');
+const userRoutes = require('./routes/userRoutes');
 const diaryRoutes = require('./routes/diaryRoutes')
 const cors = require('cors')
 const app = express();
 const port = process.env.PORT || 9000;
-
+//const morgan = require ('morgan')
 // Configuración de CORS
 app.use(cors({ origin: '*' }));
 
 //middlewares
 app.use(express.json());
-//app.use('/api',userRoutes)
+app.use('/user',userRoutes)
 app.use('/diary',diaryRoutes)
+//app.use(morgan('combined')); // Puedes cambiar 'combined' por 'dev', 'common', etc.
+
 
 //routes
 app.get('/',(req, res)=>{

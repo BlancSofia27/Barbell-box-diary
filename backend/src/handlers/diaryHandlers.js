@@ -1,4 +1,4 @@
-const { createTurnInDiary } = require("../controllers/diaryControllers")
+const { createTurnInDiary,getUserTurns } = require("../controllers/diaryControllers")
 
 const createTurnInDiaryHandler = async (req, res) => {
   try {
@@ -11,6 +11,18 @@ const createTurnInDiaryHandler = async (req, res) => {
   }
 }
 
+const getUserTurnsHandler = async (req,res) => {
+  try {
+    const {userName} = req.params;
+    console.log('usuario:',userName)
+    const response = await getUserTurns(userName);
+    res.status(200).json(response)
+  } catch (error) {
+    res.status(500).json({error:error.message})
+  }
+}
+
 module.exports = {
   createTurnInDiaryHandler,
+  getUserTurnsHandler
 }

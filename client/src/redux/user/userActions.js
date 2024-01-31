@@ -3,6 +3,7 @@ import { getNotedDays, getDays } from "./userSlice.js"
 
 const URLBASE = "http://localhost:9000"
 
+
 export const getUserInfo = () => {
   return async (dispatch) => {
     axios
@@ -47,5 +48,14 @@ export const deleteTurnToUser = async (turn, userName) => {
   } catch (error) {
     console.error('Error al eliminar el turno:', error.message)
     throw error
+  }
+}
+
+export const addUser =  (info) => async (dispatch) => {
+  try {
+    const response = await axios.post(`${URLBASE}/user/addUser`,info)
+      console.log('usuario creado con exito', response.data)
+  } catch (error) {
+    console.log('error al crear el usuario:', error.message)
   }
 }
